@@ -13,7 +13,8 @@ Imports:
   expfactory,
   dplyr,
   magrittr,
-  rlang
+  rlang,
+  tidyverse
 RoxygenNote: 6.1.1
 Suggests:
   testthat (>= 1.0.2)

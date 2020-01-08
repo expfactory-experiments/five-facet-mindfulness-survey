@@ -10,11 +10,11 @@ ffmq(df)
 \item{df}{Data frame}
 }
 \value{
-Tibble
+tibble
 }
 \description{
 Calculates FFMQ scores.  Expects a data frame
 formatted by \code{\link[expfactory:process_expfactory_survey]{expfactory::process_expfactory_survey}}, containing
-responses from a single participant. Participant id \emph{must} be in column \code{p}.
+responses from a single participant.
 }
 \keyword{FFMQ}

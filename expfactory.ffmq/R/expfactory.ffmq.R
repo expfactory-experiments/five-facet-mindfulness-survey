@@ -6,13 +6,15 @@
 #'
 #' @param df Data frame
 #' @importFrom magrittr %>%
-#' @importFrom dplyr filter mutate do rowwise rename
+#' @importFrom dplyr filter mutate select tibble
+#' @importFrom expfactory reverse_code_survey
+#' @importFrom rlang .data
 #' @keywords FFMQ
 #' @export
-#' @return Tibble
+#' @return tibble
 ffmq <- function(df) {
   # 39 items from Baer et al., (2006)
-  df <- df %>% mutate(value = as.integer(value))
+  df <- df %>% mutate(value = as.integer(.data$value))
 
   # reverse-coding
   reverse <- c(3, 5, 8, 10, 12, 13, 14, 16, 17, 18, 22, 23, 25, 28, 30, 34, 35, 38, 39)
@@ -63,9 +65,9 @@ ffmq <- function(df) {
                 "When I have distressing thoughts or images, I “step back” and am aware of the thought or image without getting taken over by it. ",
                 "When I have distressing thoughts or images, I just notice them and let them go. ")
   
-  tibble(observe  = df %>% filter(question %in% observe) %>% select(value) %>% sum(),
-         describe = df %>% filter(question %in% describe) %>% select(value) %>% sum(),
-         actaware = df %>% filter(question %in% actaware) %>% select(value) %>% sum(),
-         nonjudge = df %>% filter(question %in% nonjudge) %>% select(value) %>% sum(),
-         nonreact = df %>% filter(question %in% nonreact) %>% select(value) %>% sum())
+  tibble(observe  = df %>% filter(.data$question %in% observe) %>% select(.data$value) %>% sum(),
+         describe = df %>% filter(.data$question %in% describe) %>% select(.data$value) %>% sum(),
+         actaware = df %>% filter(.data$question %in% actaware) %>% select(.data$value) %>% sum(),
+         nonjudge = df %>% filter(.data$question %in% nonjudge) %>% select(.data$value) %>% sum(),
+         nonreact = df %>% filter(.data$question %in% nonreact) %>% select(.data$value) %>% sum())
 }
