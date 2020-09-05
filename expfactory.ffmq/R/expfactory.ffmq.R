@@ -17,9 +17,8 @@ ffmq <- function(df) {
   # 39 items from Baer et al., (2006)
   df <- df %>% mutate(value = as.integer(.data$value))
 
-  # reverse-coding
-  reverse <- c(3, 5, 8, 10, 12, 13, 14, 16, 17, 18, 22, 23, 25, 28, 30, 34, 35, 38, 39)
-  df <- reverse_code_survey(df, reverse, 5)
+  # The experiment factory FFMQ survey reverse-codes these items, so we don't need to do it here.
+  # c(3, 5, 8, 10, 12, 13, 14, 16, 17, 18, 22, 23, 25, 28, 30, 34, 35, 38, 39)
 
   ## Factors (Baer et al., 2006, Table 3)
   observe_q <- c("When I’m walking, I deliberately notice the sensations of my body moving. ",
