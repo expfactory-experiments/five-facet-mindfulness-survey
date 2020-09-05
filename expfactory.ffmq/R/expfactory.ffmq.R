@@ -9,6 +9,7 @@
 #' @importFrom dplyr filter mutate select tibble
 #' @importFrom expfactory reverse_code_survey
 #' @importFrom rlang .data
+#' @importFrom tidyr pivot_wider
 #' @keywords FFMQ
 #' @export
 #' @return tibble
@@ -21,7 +22,7 @@ ffmq <- function(df) {
   df <- reverse_code_survey(df, reverse, 5)
 
   ## Factors (Baer et al., 2006, Table 3)
-  observe <- c("When I’m walking, I deliberately notice the sensations of my body moving. ",
+  observe_q <- c("When I’m walking, I deliberately notice the sensations of my body moving. ",
                "When I take a shower or bath, I stay alert to the sensations of water on my body. ",
                "I notice how foods and drinks affect my thoughts, bodily sensations, and emotions. ",
                "I pay attention to sensations, such as the wind in my hair or sun on my face. ",
@@ -29,8 +30,14 @@ ffmq <- function(df) {
                "I notice the smells and aromas of things. ",
                "I notice visual elements in art or nature, such as colors, shapes, textures, or patterns of light and shadow. ",
                "I pay attention to how my emotions affect my thoughts and behavior. ")
-  
-  describe <- c("I’m good at finding words to describe my feelings. ",
+  observe <- df %>%
+    filter(.data$question %in% observe_q) %>%
+    select(.data$value) %>%
+    mutate(item = c(1, 6, 11, 15, 20, 26, 31, 36)) %>%
+    pivot_wider(names_from = .data$item, values_from = .data$value, names_prefix = 'q')
+  observe <- observe %>% mutate(observe = rowSums(observe))
+
+  describe_q <- c("I’m good at finding words to describe my feelings. ",
                 "I can easily put my beliefs, opinions, and expectations into words. ",
                 "It’s hard for me to find the words to describe what I’m thinking. ",
                 "I have trouble thinking of the right words to express how I feel about things.",
@@ -38,8 +45,14 @@ ffmq <- function(df) {
                 "Even when I’m feeling terribly upset, I can find a way to put it into words. ",
                 "My natural tendency is to put my experiences into words. ",
                 "I can usually describe how I feel at the moment in considerable detail. ")
+  describe <- df %>%
+    filter(.data$question %in% describe_q) %>%
+    select(.data$value) %>%
+    mutate(item = c(2, 7, 12, 16, 22, 27, 32, 37)) %>%
+    pivot_wider(names_from = .data$item, values_from = .data$value, names_prefix = 'q')
+  describe <- describe %>% mutate(describe = rowSums(describe))
   
-  actaware <- c("I find it difficult to stay focused on what’s happening in the present. ",
+  actaware_q <- c("I find it difficult to stay focused on what’s happening in the present. ",
                 "It seems I am “running on automatic” without much awareness of what I’m doing. ",
                 "I rush through activities without being really attentive to them. ",
                 "I do jobs or tasks automatically without being aware of what I’m doing. ",
@@ -47,8 +60,14 @@ ffmq <- function(df) {
                 "When I do things, my mind wanders off and I’m easily distracted. ",
                 "I don’t pay attention to what I’m doing because I’m daydreaming, worrying, or otherwise distracted. ",
                 "I am easily distracted. ")
+  actaware <- df %>%
+    filter(.data$question %in% actaware_q) %>%
+    select(.data$value) %>%
+    mutate(item = c(18, 23, 28, 34, 38, 5, 8, 13)) %>%
+    pivot_wider(names_from = .data$item, values_from = .data$value, names_prefix = 'q')
+  actaware <- actaware %>% mutate(actaware = rowSums(actaware))
   
-  nonjudge <- c("I criticize myself for having irrational or inappropriate emotions. ",
+  nonjudge_q <- c("I criticize myself for having irrational or inappropriate emotions. ",
                 "I tell myself I shouldn’t be feeling the way I’m feeling. ",
                 "I believe some of my thoughts are abnormal or bad and I shouldn’t think that way.",
                 "I make judgments about whether my thoughts are good or bad. ",
@@ -56,18 +75,26 @@ ffmq <- function(df) {
                 "I think some of my emotions are bad or inappropriate and I shouldn’t feel them. ",
                 "I disapprove of myself when I have irrational ideas. ",
                 "When I have distressing thoughts or images, I judge myself as good or bad, depending what the thought/image is about. ")
+  nonjudge <- df %>%
+    filter(.data$question %in% nonjudge_q) %>%
+    select(.data$value) %>%
+    mutate(item = c(3, 10, 14, 17, 25, 30, 39, 35)) %>%
+    pivot_wider(names_from = .data$item, values_from = .data$value, names_prefix = 'q')
+  nonjudge <- nonjudge %>% mutate(nonjudge = rowSums(nonjudge))
 
-  nonreact <- c("I perceive my feelings and emotions without having to react to them. ",
+  nonreact_q <- c("I perceive my feelings and emotions without having to react to them. ",
                 "I watch my feelings without getting lost in them. ",
                 "In difficult situations, I can pause without immediately reacting. ",
                 "When I have distressing thoughts or images I am able just to notice them without reacting. ",
                 "When I have distressing thoughts or images, I feel calm soon after.",
                 "When I have distressing thoughts or images, I “step back” and am aware of the thought or image without getting taken over by it. ",
                 "When I have distressing thoughts or images, I just notice them and let them go. ")
+  nonreact <- df %>%
+    filter(.data$question %in% nonreact_q) %>%
+    select(.data$value) %>%
+    mutate(item = c(4, 9, 21, 29, 24, 19, 33)) %>%
+    pivot_wider(names_from = .data$item, values_from = .data$value, names_prefix = 'q')
+  nonreact <- nonreact %>% mutate(nonreact = rowSums(nonreact))
   
-  tibble(observe  = df %>% filter(.data$question %in% observe) %>% select(.data$value) %>% sum(),
-         describe = df %>% filter(.data$question %in% describe) %>% select(.data$value) %>% sum(),
-         actaware = df %>% filter(.data$question %in% actaware) %>% select(.data$value) %>% sum(),
-         nonjudge = df %>% filter(.data$question %in% nonjudge) %>% select(.data$value) %>% sum(),
-         nonreact = df %>% filter(.data$question %in% nonreact) %>% select(.data$value) %>% sum())
+  tibble(observe, describe, actaware, nonjudge, nonreact)
 }
